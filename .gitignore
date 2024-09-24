@@ -1,1 +1,12 @@
-myenv/
+/*
+*.pdf
+*key.txt
+
+!project3/
+!LICENSE
+!README.md
+!.gitignore
+
+project3/ex00/*
+!project3/ex00/comparacao_modelos.txt
+
