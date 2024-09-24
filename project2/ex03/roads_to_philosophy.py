@@ -6,26 +6,16 @@ import sys
 # Wikipedia base URL
 WIKI_BASE_URL = "https://en.wikipedia.org"
 
-def perform_search(query):
-    """Performs a search on Wikipedia and returns the first article URL."""
-    search_url = f"{WIKI_BASE_URL}/w/index.php?search={query.replace(' ', '+')}"
-    response = requests.get(search_url)
+def validate_article_url(query):
+    """Validates if the direct Wikipedia URL for the given query exists."""
+    article_url = f"{WIKI_BASE_URL}/wiki/{query.replace(' ', '_')}"
+    response = requests.get(article_url)
     
-    if response.status_code != 200:
-        print(f"Failed to perform search. Status code: {response.status_code}")
+    if response.status_code == 200:
+        return article_url
+    else:
+        print(f"No valid article found for '{query}'")
         return None
-
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # Try to find the first article link in the search result
-    search_result = soup.find('div', class_='mw-search-result-heading')
-    if search_result:
-        first_link = search_result.find('a')
-        if first_link and first_link.get('href'):
-            return WIKI_BASE_URL + first_link['href']
-    
-    print(f"No valid search result found for '{query}'")
-    return None
 
 def get_first_link(url):
     """Fetches the first valid Wikipedia article link from a page."""
@@ -61,6 +51,7 @@ def trace_to_philosophy(start_url):
     visited = set()
     current_url = start_url
     steps = 0
+    titles = []
 
     while current_url:
         if current_url in visited:
@@ -68,16 +59,27 @@ def trace_to_philosophy(start_url):
             return steps
 
         visited.add(current_url)
-        print(f"Step {steps}: {current_url}")
 
-        if "Philosophy" in current_url:
+        # Get the title of the current page
+        response = requests.get(current_url)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            title = soup.find('h1').text
+            titles.append(title)
+        else:
+            print(f"Failed to retrieve the page at {current_url}.")
+            break
+
+        print(f"Step {steps}: {title}")
+
+        if "Philosophy" in title:
             print(f"Reached the Philosophy page in {steps} steps!")
-            return steps
+            return steps, titles
 
         first_link = get_first_link(current_url)
         if not first_link:
             print("No further links found. Stopping.")
-            return steps
+            break
 
         current_url = first_link
         steps += 1
@@ -85,7 +87,7 @@ def trace_to_philosophy(start_url):
         # Pause between requests to avoid overwhelming Wikipedia's servers
         time.sleep(0.5)
 
-    return steps
+    return steps, titles
 
 def main():
     if len(sys.argv) > 1:
@@ -93,9 +95,11 @@ def main():
     else:
         query = input("Enter a Wikipedia search term: ")
 
-    start_url = perform_search(query)
+    start_url = validate_article_url(query)
     if start_url:
-        trace_to_philosophy(start_url)
+        steps, titles = trace_to_philosophy(start_url)
+        print("\n".join(titles))
+        print(f"\n{steps} roads from {query} to philosophy!")
 
 if __name__ == "__main__":
     main()
