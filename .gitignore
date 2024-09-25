@@ -10,3 +10,7 @@
 project3/ex00/*
 !project3/ex00/comparacao_modelos.txt
 
+project3/ex01/*
+!project3/ex01/job_description.txt
+!project3/ex01/be_structured.py
+
