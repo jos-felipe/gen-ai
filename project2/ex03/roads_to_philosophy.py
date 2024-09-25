@@ -6,7 +6,7 @@
 #    By: josfelip <josfelip@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/24 12:44:12 by josfelip          #+#    #+#              #
-#    Updated: 2024/09/24 12:44:15 by josfelip         ###   ########.fr        #
+#    Updated: 2024/09/25 12:23:51 by josfelip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,7 @@ def trace_to_philosophy(start_url):
     while current_url:
         if current_url in visited:
             print("Detected a loop! Exiting...")
-            return steps
+            exit(0)
 
         visited.add(current_url)
 
