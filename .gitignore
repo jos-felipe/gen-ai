@@ -2,18 +2,30 @@
 *.pdf
 *key.txt
 
-!project3/
+# Root
 !LICENSE
 !README.md
 !.gitignore
+!project3/
+!project4/
 
+# Directories
+project3/myenv/
 project3/ex00/*
-!project3/ex00/comparacao_modelos.txt
-
 project3/ex01/*
+project3/ex02/*
+project4/myenv/
+project4/ex00/*
+project4/ex01/*
+project4/ex02/*
+
+# Files
+!project3/ex00/comparacao_modelos.txt
 !project3/ex01/job_description.txt
 !project3/ex01/be_structured.py
-
-project3/ex02/*
 !project3/ex02/prompt_generator.py
+!project4/ex00/comparacao_modelos.txt
+!project4/ex01/job_description.txt
+!project4/ex01/be_structured.py
+!project4/ex02/prompt_generator.py
 
