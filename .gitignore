@@ -14,3 +14,6 @@ project3/ex01/*
 !project3/ex01/job_description.txt
 !project3/ex01/be_structured.py
 
+project3/ex02/*
+!project3/ex02/prompt_generator.py
+
