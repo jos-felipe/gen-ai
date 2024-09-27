@@ -25,4 +25,5 @@ project4/ex02/*
 !project3/ex01/be_structured.py
 !project3/ex02/prompt_generator.py
 !project4/ex00/sentiment_analyzer.py
+!project4/ex01/movie_info.py
 
