@@ -37,4 +37,7 @@ project5/ex03/*
 !project4/ex02/shannon_analysis.py
 !project5/ex00/resume_analyzer.py
 !project5/ex01/chromadb_analysis.md
+!project5/ex03/project_explanation.md
+!project5/ex03/requirements.txt
+!project5/ex03/resume_analyzer_app.py
 
