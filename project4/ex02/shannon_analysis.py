@@ -1,5 +1,4 @@
 import os
-import json
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -8,50 +7,46 @@ load_dotenv()
 
 # Configurações das APIs
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=GOOGLE_API_KEY)
 
-def create_prompt(movie_title: str):
-	# Prompt pré-preenchido para ser utilizado
-	user_prompt = f"""
-	Provide information about the movie "{movie_title}" in JSON format.
+def run_gemini(model_name, prompt, system_instructions):
+	model=genai.GenerativeModel(
+		model_name=model_name,
+		system_instruction=system_instructions)
+	response = model.generate_content(prompt)
+	return response.text
 
-	Start your response with:
-	{{
-		"title": "{movie_title}",
-	"""
-	return user_prompt.strip()
+def run_prompt_chain():
+	prompt_chain = [
+		"""
+		<Task>Elaborate an essay about the life and carrer of Claude Shannon.<\Task>
+		<Instructions>Include information about his early life, education, and major contributions to the field of computer science.<\Instructions>
+		""",
+		"""
+		<Task>Analyze the contributions of Claude Shannon's on the theory of information.<\Task>
+		<Instructions>Discuss the relevance of his work in the context of modern computer science and telecommunications.<\Instructions>
+		<Reference_1>
+		""",
+		"""
+		<Task>Explore the impact of Claude Shannon's job on modern computer science and on communication technology.<\Task>
+		<Instructions>Discuss the relevance of his work in the context of modern computer science and telecommunications.<\Instructions>
+		<Reference_1>
+		""",
+		"""
+		<Task>Elaborate an essay about the life and carrer of Claude Shannon, regarding the given information as reference:<\Task>
+		<Instructions>Include information about his early life, education, and major contributions to the field of computer science.<\Instructions>
+		<Reference_1>
+		""",
+	]
+	result_1 = run_gemini("gemini-1.5-flash", prompt_chain[0], "Write an essay about Claude Shannon.")
+	result_2 = run_gemini("gemini-1.5-flash", prompt_chain[1] + result_1 + "</Reference_1>", "Analyze the contributions of Claude Shannon.")
+	result_3 = run_gemini("gemini-1.5-flash", prompt_chain[2] + result_1 + "</Reference_1>\n<Reference_2>" + result_2 + "</Reference_2>\n", "Explore the impact of Claude Shannon's job.")
+	result_4 = run_gemini("gemini-1.5-flash", prompt_chain[3] + result_1 + "</Reference_1>\n<Reference_2>" + result_2 + "</Reference_2>\n<Reference_3>" + result_3 + "</Reference_3>", "Write an essay about Claude Shannon.")
 
-def call_gemini(prompt):
-	genai.configure(api_key=GOOGLE_API_KEY)
-	model = genai.GenerativeModel("gemini-1.5-flash")
-	response_json = model.generate_content(prompt)
-	return response_json.text
+	final_result = f"Claude Sannon: A Pioneer in Computer Science\n\nEarly life:\n{result_1}\n\nMajor Contributions:\n{result_2}\n\nImpact on Modern Technology:\n{result_3}\n\Full essay:\n{result_4}"
 
-def structured_output(response):
-	movie_info = ["title", "year", "director", "genre", "plot"]
-	output = {}
-	for info in movie_info:
-		if info in response:
-			output[info] = response[info]
-		else:
-			output[info] = None
-	return output
+	print(final_result)
+	return final_result
 
-def get_movie_info(text):
-	prompt = create_prompt(text)
-	result = call_gemini(prompt)
-	result_json = json.loads(result)
-	return structured_output(result_json)
-
-# Como o seu programa será chamado:
-movie_titles = ["The Matrix", "Inception", "Pulp Fiction", "The Shawshank Redemption", "The Godfather"]
-
-for title in movie_titles:
-	print(f"\nAnalyzing: {title}")
-	result = get_movie_info(title)
-	if result:
-		for key, value in result.items():
-			print(f"{key}: {value}")
-	else:
-		# Tratamento de erro adequado
-		print("Erro ao obter informações do filme.")
-	print("-" * 50)
+if __name__ == "__main__":
+	run_prompt_chain()
