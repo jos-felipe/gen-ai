@@ -1,6 +1,7 @@
 /*
 *.pdf
 *key.txt
+*.zip
 
 # Root
 !LICENSE
@@ -8,6 +9,7 @@
 !.gitignore
 !project3/
 !project4/
+!project5/
 
 # Directories
 project3/myenv/
@@ -18,6 +20,12 @@ project4/myenv/
 project4/ex00/*
 project4/ex01/*
 project4/ex02/*
+project5/myenv/
+project5/ex-01/*
+project5/ex00/*
+project5/ex01/*
+project5/ex02/*
+project5/ex03/*
 
 # Files
 !project3/ex00/comparacao_modelos.txt
@@ -27,4 +35,5 @@ project4/ex02/*
 !project4/ex00/sentiment_analyzer.py
 !project4/ex01/movie_info.py
 !project4/ex02/shannon_analysis.py
+!project5/ex00/resume_analyzer.py
 
