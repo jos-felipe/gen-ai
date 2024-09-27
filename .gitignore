@@ -40,4 +40,5 @@ project5/ex03/*
 !project5/ex03/project_explanation.md
 !project5/ex03/requirements.txt
 !project5/ex03/resume_analyzer_app.py
+!project5/ex03/rag_local_api.py
 
